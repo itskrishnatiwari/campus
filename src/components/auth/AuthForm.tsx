@@ -7,27 +7,72 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useAuth } from '@/contexts/AuthContext';
 
 const AuthForm: React.FC = () => {
+  const { login, signup } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
   const [role, setRole] = useState<'student' | 'teacher'>('student');
+  
+  // Form fields
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [signupData, setSignupData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    semester: '',
+    branch: '',
+    department: '',
+    subjects: '',
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setLoginData(prev => ({ ...prev, [id.replace('login-', '')]: value }));
+  };
+
+  const handleSignupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setSignupData(prev => ({ ...prev, [id.replace('signup-', '')]: value }));
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
     try {
-      if (authMode === 'login') {
-        // Login logic would go here with Supabase
-        toast.success('Login successful!');
-      } else {
-        // Signup logic would go here with Supabase
-        toast.success('Account created! Please verify your email.');
-      }
-    } catch (error) {
-      toast.error('An error occurred. Please try again.');
-      console.error('Auth error:', error);
+      await login(loginData.email, loginData.password);
+      toast.success('Login successful!');
+    } catch (error: any) {
+      toast.error(error.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const userData = {
+        name: signupData.name,
+        email: signupData.email,
+        role,
+        ...(role === 'student' ? {
+          semester: signupData.semester,
+          branch: signupData.branch
+        } : {
+          department: signupData.department,
+          subjects: signupData.subjects
+        })
+      };
+      
+      await signup(userData, signupData.password);
+      toast.success('Account created successfully!');
+    } catch (error: any) {
+      toast.error(error.message || 'Signup failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -47,15 +92,31 @@ const AuthForm: React.FC = () => {
         </TabsList>
 
         <TabsContent value="login">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@university.edu" required className="campus-input" />
+              <Label htmlFor="login-email">Email</Label>
+              <Input 
+                id="login-email" 
+                type="email" 
+                placeholder="you@university.edu" 
+                value={loginData.email}
+                onChange={handleLoginChange}
+                required 
+                className="campus-input" 
+              />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="••••••••" required className="campus-input" />
+              <Label htmlFor="login-password">Password</Label>
+              <Input 
+                id="login-password" 
+                type="password" 
+                placeholder="••••••••" 
+                value={loginData.password}
+                onChange={handleLoginChange}
+                required 
+                className="campus-input" 
+              />
             </div>
 
             <Button type="submit" className="w-full campus-button" disabled={isLoading}>
@@ -72,20 +133,43 @@ const AuthForm: React.FC = () => {
         </TabsContent>
 
         <TabsContent value="signup">
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="signup-name">Full Name</Label>
-              <Input id="signup-name" placeholder="John Doe" required className="campus-input" />
+              <Input 
+                id="signup-name" 
+                placeholder="John Doe" 
+                value={signupData.name} 
+                onChange={handleSignupChange} 
+                required 
+                className="campus-input" 
+              />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="signup-email">Email</Label>
-              <Input id="signup-email" type="email" placeholder="you@university.edu" required className="campus-input" />
+              <Input 
+                id="signup-email" 
+                type="email" 
+                placeholder="you@university.edu" 
+                value={signupData.email} 
+                onChange={handleSignupChange} 
+                required 
+                className="campus-input" 
+              />
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="signup-password">Password</Label>
-              <Input id="signup-password" type="password" placeholder="••••••••" required className="campus-input" />
+              <Input 
+                id="signup-password" 
+                type="password" 
+                placeholder="••••••••" 
+                value={signupData.password} 
+                onChange={handleSignupChange} 
+                required 
+                className="campus-input" 
+              />
             </div>
 
             <div className="space-y-2">
@@ -110,12 +194,26 @@ const AuthForm: React.FC = () => {
             {role === 'student' && (
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor="semester">Semester</Label>
-                  <Input id="semester" placeholder="e.g. 3rd" required className="campus-input" />
+                  <Label htmlFor="signup-semester">Semester</Label>
+                  <Input 
+                    id="signup-semester" 
+                    placeholder="e.g. 3rd" 
+                    value={signupData.semester} 
+                    onChange={handleSignupChange} 
+                    required 
+                    className="campus-input" 
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="branch">Branch</Label>
-                  <Input id="branch" placeholder="e.g. Computer Science" required className="campus-input" />
+                  <Label htmlFor="signup-branch">Branch</Label>
+                  <Input 
+                    id="signup-branch" 
+                    placeholder="e.g. Computer Science" 
+                    value={signupData.branch} 
+                    onChange={handleSignupChange} 
+                    required 
+                    className="campus-input" 
+                  />
                 </div>
               </div>
             )}
@@ -123,12 +221,26 @@ const AuthForm: React.FC = () => {
             {role === 'teacher' && (
               <div className="grid grid-cols-1 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor="department">Department</Label>
-                  <Input id="department" placeholder="e.g. Computer Science" required className="campus-input" />
+                  <Label htmlFor="signup-department">Department</Label>
+                  <Input 
+                    id="signup-department" 
+                    placeholder="e.g. Computer Science" 
+                    value={signupData.department} 
+                    onChange={handleSignupChange} 
+                    required 
+                    className="campus-input" 
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="subjects">Subjects</Label>
-                  <Input id="subjects" placeholder="e.g. Data Structures, Algorithms" required className="campus-input" />
+                  <Label htmlFor="signup-subjects">Subjects</Label>
+                  <Input 
+                    id="signup-subjects" 
+                    placeholder="e.g. Data Structures, Algorithms" 
+                    value={signupData.subjects} 
+                    onChange={handleSignupChange} 
+                    required 
+                    className="campus-input" 
+                  />
                 </div>
               </div>
             )}
