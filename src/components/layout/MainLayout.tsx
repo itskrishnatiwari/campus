@@ -6,14 +6,19 @@ import Sidebar from '@/components/layout/Sidebar';
 import { Menu, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface MainLayoutProps {
   userRole: 'student' | 'teacher';
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({ userRole }) => {
+const MainLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const isMobile = useIsMobile();
+  const { user } = useAuth();
+  
+  // Default to student if user role is somehow missing
+  const userRole = (user?.role as 'student' | 'teacher') || 'student';
 
   return (
     <div className="min-h-screen bg-muted/30">

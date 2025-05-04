@@ -7,10 +7,28 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 
+// Define proper types for the form data based on user role
+interface BaseFormData {
+  name: string;
+  email: string;
+}
+
+interface StudentFormData extends BaseFormData {
+  semester?: string;
+  branch?: string;
+}
+
+interface TeacherFormData extends BaseFormData {
+  department?: string;
+  subjects?: string;
+}
+
+type FormDataType = StudentFormData | TeacherFormData;
+
 const SettingsPage = () => {
   const { user, updateUser, logout } = useAuth();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     name: user?.name || '',
     email: user?.email || '',
     ...(user?.role === 'student' ? {
@@ -77,7 +95,7 @@ const SettingsPage = () => {
                 <Label htmlFor="semester">Semester</Label>
                 <Input 
                   id="semester" 
-                  value={formData.semester} 
+                  value={(formData as StudentFormData).semester || ''} 
                   onChange={handleChange} 
                   className="campus-input"
                 />
@@ -87,7 +105,7 @@ const SettingsPage = () => {
                 <Label htmlFor="branch">Branch</Label>
                 <Input 
                   id="branch" 
-                  value={formData.branch} 
+                  value={(formData as StudentFormData).branch || ''} 
                   onChange={handleChange} 
                   className="campus-input"
                 />
@@ -101,7 +119,7 @@ const SettingsPage = () => {
                 <Label htmlFor="department">Department</Label>
                 <Input 
                   id="department" 
-                  value={formData.department} 
+                  value={(formData as TeacherFormData).department || ''} 
                   onChange={handleChange} 
                   className="campus-input"
                 />
@@ -111,7 +129,7 @@ const SettingsPage = () => {
                 <Label htmlFor="subjects">Subjects</Label>
                 <Input 
                   id="subjects" 
-                  value={formData.subjects} 
+                  value={(formData as TeacherFormData).subjects || ''} 
                   onChange={handleChange} 
                   className="campus-input"
                 />
