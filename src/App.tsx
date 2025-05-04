@@ -19,42 +19,54 @@ import ProfilePage from "./pages/ProfilePage";
 import NotificationsPage from "./pages/NotificationsPage";
 import EventsPage from "./pages/EventsPage";
 import MentorshipPage from "./pages/MentorshipPage";
+import React from 'react';
 
-const queryClient = new QueryClient();
+// Create a new QueryClient instance
+// Important: Initialize it outside of the component to avoid recreation on renders
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // Default to not refetching on window focus
+      retry: 1, // Only retry failed queries once
+    },
+  },
+});
 
-const App = () => {
+const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <Toaster />
-            <Sonner />
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              
-              {/* Protected Routes */}
-              <Route element={<ProtectedRoute />}>
-                <Route element={<MainLayout />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/buzzboard" element={<BuzzBoardPage />} />
-                  <Route path="/chat" element={<ChatPage />} />
-                  <Route path="/notifications" element={<NotificationsPage />} />
-                  <Route path="/events" element={<EventsPage />} />
-                  <Route path="/mentorship" element={<MentorshipPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/settings" element={<SettingsPage />} />
-                  <Route path="/notes" element={<NotesPage />} />
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <BrowserRouter>
+            <AuthProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                
+                {/* Protected Routes */}
+                <Route element={<ProtectedRoute />}>
+                  <Route element={<MainLayout />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/buzzboard" element={<BuzzBoardPage />} />
+                    <Route path="/chat" element={<ChatPage />} />
+                    <Route path="/notifications" element={<NotificationsPage />} />
+                    <Route path="/events" element={<EventsPage />} />
+                    <Route path="/mentorship" element={<MentorshipPage />} />
+                    <Route path="/profile" element={<ProfilePage />} />
+                    <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="/notes" element={<NotesPage />} />
+                  </Route>
                 </Route>
-              </Route>
-              
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+                
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
 
