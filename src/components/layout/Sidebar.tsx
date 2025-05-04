@@ -16,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, userRole }) => {
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { user } = useAuth();
   
   const studentNavItems = [
     { label: 'Dashboard', href: '/dashboard', icon: <PanelRight size={20} /> },
@@ -112,17 +114,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, userRole }) => {
         {isOpen ? (
           <div className="flex items-center space-x-3">
             <div className="h-10 w-10 rounded-full bg-campus-purple text-white flex items-center justify-center">
-              {userRole === 'student' ? 'S' : 'T'}
+              {user?.name ? user.name.charAt(0).toUpperCase() : (userRole === 'student' ? 'S' : 'T')}
             </div>
             <div className="flex-1 truncate">
-              <p className="font-medium text-sm">John Doe</p>
+              <p className="font-medium text-sm">{user?.name || 'User'}</p>
               <p className="text-xs text-muted-foreground capitalize">{userRole}</p>
             </div>
           </div>
         ) : (
           <div className="flex justify-center">
             <div className="h-10 w-10 rounded-full bg-campus-purple text-white flex items-center justify-center">
-              {userRole === 'student' ? 'S' : 'T'}
+              {user?.name ? user.name.charAt(0).toUpperCase() : (userRole === 'student' ? 'S' : 'T')}
             </div>
           </div>
         )}

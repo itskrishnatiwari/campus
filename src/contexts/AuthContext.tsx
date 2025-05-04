@@ -71,6 +71,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('campusBuzzUser', JSON.stringify(userWithoutPassword));
       setUser(userWithoutPassword);
       
+      console.log("Logged in user:", userWithoutPassword);
+      
       // Navigate to dashboard
       navigate('/dashboard');
     } catch (error) {
@@ -102,6 +104,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       // Save updated users list
       localStorage.setItem('campusBuzzUsers', JSON.stringify([...users, newUser]));
+      
+      console.log("Created new user:", newUser);
       
       // Login the user after signup
       await login(userData.email, password);

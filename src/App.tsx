@@ -15,6 +15,10 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import SettingsPage from "./pages/SettingsPage";
 import NotesPage from "./pages/NotesPage";
+import ProfilePage from "./pages/ProfilePage";
+import NotificationsPage from "./pages/NotificationsPage";
+import EventsPage from "./pages/EventsPage";
+import MentorshipPage from "./pages/MentorshipPage";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +40,10 @@ const App = () => {
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/buzzboard" element={<BuzzBoardPage />} />
                   <Route path="/chat" element={<ChatPage />} />
+                  <Route path="/notifications" element={<NotificationsPage />} />
+                  <Route path="/events" element={<EventsPage />} />
+                  <Route path="/mentorship" element={<MentorshipPage />} />
+                  <Route path="/profile" element={<ProfilePage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                   <Route path="/notes" element={<NotesPage />} />
                 </Route>
