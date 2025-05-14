@@ -10,6 +10,14 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  preview: {
+    host: true,
+    port: 8080,
+    allowedHosts: [
+      'campus-lf01.onrender.com',
+      '.onrender.com'
+    ]
+  },
   plugins: [
     react(),
     mode === 'development' &&
