@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -51,12 +50,15 @@ const App: React.FC = () => {
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/buzzboard" element={<BuzzBoardPage />} />
                     <Route path="/chat" element={<ChatPage />} />
+                    <Route path="/chat/create" element={<ChatPage />} />
                     <Route path="/notifications" element={<NotificationsPage />} />
                     <Route path="/events" element={<EventsPage />} />
+                    <Route path="/events/create" element={<EventsPage />} />
                     <Route path="/mentorship" element={<MentorshipPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/notes" element={<NotesPage />} />
+                    <Route path="/notes/upload" element={<NotesPage />} />
                   </Route>
                 </Route>
                 
